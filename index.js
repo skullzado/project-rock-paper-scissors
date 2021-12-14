@@ -26,23 +26,21 @@ function outputString(result, playerSelection, computerSelection) {
 }
 
 function playRound(playerSelection, computerSelection) {
-	let playerChoice = playerSelection;
-	let computerChoice = computerSelection;
 	let result;
 
 	if (playerSelection === computerSelection) {
 		result = 0;
-		outputString(result, playerChoice, computerChoice);
+		outputString(result, playerSelection, computerSelection);
 	} else if (
 		(playerSelection === ROCK && computerSelection === PAPER) ||
 		(playerSelection === PAPER && computerSelection === SCISSORS) ||
 		(playerSelection === SCISSORS && computerSelection === ROCK)
 	) {
 		result = -1;
-		outputString(result, playerChoice, computerChoice);
+		outputString(result, playerSelection, computerSelection);
 	} else {
 		result = 1;
-		outputString(result, playerChoice, computerChoice);
+		outputString(result, playerSelection, computerSelection);
 	}
 
 	return result;
