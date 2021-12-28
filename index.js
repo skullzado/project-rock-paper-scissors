@@ -4,64 +4,94 @@ const SCISSORS = 'Scissors';
 
 const CHOICES = [ROCK, PAPER, SCISSORS];
 
+const rockBtn = document.querySelector('.rock');
+const paperBtn = document.querySelector('.paper');
+const scissorsBtn = document.querySelector('.scissors');
+const result = document.querySelector('.result');
+const scoreBoard = document.querySelector('.score-board');
+const roundResult = document.querySelector('.round-result');
+const gameResult = document.querySelector('.game-result');
+const playerScore = document.querySelector('.player-score');
+const computerScore = document.querySelector('.computer-score');
+const resetPara = document.querySelector('.reset-para');
+
+let playerWinCounter = 0;
+let computerWinCounter = 0;
+
+rockBtn.addEventListener('click', () => clickHandler('Rock'));
+paperBtn.addEventListener('click', () => clickHandler('Paper'));
+scissorsBtn.addEventListener('click', () => clickHandler('Scissors'));
+
 function computerPlay() {
 	return CHOICES[Math.floor(Math.random() * CHOICES.length)];
 }
 
-function formatPlayerSelection(playerSelection) {
-	const playerChoice =
-		playerSelection[0].toUpperCase() +
-		playerSelection.slice(1, playerSelection.length);
-	return playerChoice;
-}
-
-function outputString(result, playerSelection, computerSelection) {
-	if (result === 1) {
-		console.log(`You Win! ${playerSelection} beats ${computerSelection}!`);
-	} else if (result === -1) {
-		console.log(`You Lose! ${computerSelection} beats ${playerSelection}!`);
+function outputString(str, choice1, choice2) {
+	if (str === 'Win' || str === 'Lose') {
+		roundResult.textContent = `You ${str}! ${choice1} beats ${choice2}`;
 	} else {
-		console.log(`It's a Draw! You both chose ${computerSelection}!`);
+		roundResult.textContent = `It's a ${str}! You both chose ${choice1}!`;
 	}
 }
 
-function playRound(playerSelection, computerSelection) {
-	let result;
-
-	if (playerSelection === computerSelection) {
-		result = 0;
-		outputString(result, playerSelection, computerSelection);
+function outputGameResult() {
+	if (playerWinCounter === 5 && playerWinCounter > computerWinCounter) {
+		gameResult.textContent = 'You Win!';
+		outputEndGameString();
 	} else if (
-		(playerSelection === ROCK && computerSelection === PAPER) ||
-		(playerSelection === PAPER && computerSelection === SCISSORS) ||
-		(playerSelection === SCISSORS && computerSelection === ROCK)
+		computerWinCounter === 5 &&
+		computerWinCounter > playerWinCounter
 	) {
-		result = -1;
-		outputString(result, playerSelection, computerSelection);
-	} else {
-		result = 1;
-		outputString(result, playerSelection, computerSelection);
+		gameResult.textContent = 'You Lose!';
+		outputEndGameString();
 	}
-
-	return result;
 }
 
-function game() {
-	let playerChoice;
-	let round = 1;
-	let count = 0;
+function outputEndGameString() {
+	resetPara.textContent = 'Click any of the buttons to play again.';
+}
 
-	while (round < 6) {
-		playerChoice = prompt('Rock, Paper or Scissors?');
-		count += playRound(formatPlayerSelection(playerChoice), computerPlay());
-		round++;
-	}
+function playRound(playerChoice, computerChoice) {
+	let resultStr;
 
-	if (count === 0) {
-		console.log("It's a Draw!");
-	} else if (count < 0) {
-		console.log('Computer Wins!');
+	if (playerChoice === computerChoice) {
+		resultStr = 'Draw';
+		outputString(resultStr, playerChoice, computerChoice);
+	} else if (
+		(playerChoice === ROCK && computerChoice === PAPER) ||
+		(playerChoice === PAPER && computerChoice === SCISSORS) ||
+		(playerChoice === SCISSORS && computerChoice === ROCK)
+	) {
+		resultStr = 'Lose';
+		outputString(resultStr, computerChoice, playerChoice);
+		computerWinCounter++;
 	} else {
-		console.log('You Win!');
+		resultStr = 'Win';
+		outputString(resultStr, playerChoice, computerChoice);
+		playerWinCounter++;
 	}
+}
+
+function updateWinCounter() {
+	playerScore.textContent = playerWinCounter;
+	computerScore.textContent = computerWinCounter;
+}
+
+function clickHandler(playerChoice) {
+	if (playerWinCounter === 5 || computerWinCounter === 5) {
+		reset();
+	} else {
+		playRound(playerChoice, computerPlay());
+		updateWinCounter();
+		outputGameResult();
+	}
+}
+
+function reset() {
+	playerWinCounter = 0;
+	computerWinCounter = 0;
+	roundResult.textContent = '';
+	gameResult.textContent = '';
+	resetPara.textContent = '';
+	updateWinCounter();
 }
