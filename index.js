@@ -13,7 +13,8 @@ const roundResult = document.querySelector('.round-result');
 const gameResult = document.querySelector('.game-result');
 const playerScore = document.querySelector('.player-score');
 const computerScore = document.querySelector('.computer-score');
-const resetPara = document.querySelector('.reset-para');
+const modalContainer = document.querySelector('.modal-container');
+const modalCloseBtn = document.querySelector('.btn');
 
 let playerWinCounter = 0;
 let computerWinCounter = 0;
@@ -21,6 +22,7 @@ let computerWinCounter = 0;
 rockBtn.addEventListener('click', () => clickHandler('Rock'));
 paperBtn.addEventListener('click', () => clickHandler('Paper'));
 scissorsBtn.addEventListener('click', () => clickHandler('Scissors'));
+modalCloseBtn.addEventListener('click', () => reset());
 
 function computerPlay() {
 	return CHOICES[Math.floor(Math.random() * CHOICES.length)];
@@ -37,18 +39,16 @@ function outputString(str, choice1, choice2) {
 function outputGameResult() {
 	if (playerWinCounter === 5 && playerWinCounter > computerWinCounter) {
 		gameResult.textContent = 'You Win!';
+		showModalHandler();
 		outputEndGameString();
 	} else if (
 		computerWinCounter === 5 &&
 		computerWinCounter > playerWinCounter
 	) {
 		gameResult.textContent = 'You Lose!';
+		showModalHandler();
 		outputEndGameString();
 	}
-}
-
-function outputEndGameString() {
-	resetPara.textContent = 'Click any of the buttons to play again.';
 }
 
 function playRound(playerChoice, computerChoice) {
@@ -87,11 +87,15 @@ function clickHandler(playerChoice) {
 	}
 }
 
+function showModalHandler() {
+	modalContainer.classList.add('show');
+}
+
 function reset() {
 	playerWinCounter = 0;
 	computerWinCounter = 0;
 	roundResult.textContent = '';
 	gameResult.textContent = '';
-	resetPara.textContent = '';
+	modalContainer.classList.remove('show');
 	updateWinCounter();
 }
